@@ -99,7 +99,7 @@
 			height: 100%;
 		}
 
-		.backdrop .weave { mix-blend-mode: soft-light; opacity: 0.6; }
+		.backdrop .weave { mix-blend-mode: soft-light; opacity: 0.3; }
 
 		.backdrop::after {
 			content: "";
@@ -366,7 +366,7 @@
 	<script>
 		document.getElementById('year').textContent = new Date().getFullYear();
 
-		// Paints the backdrop: layers of long, thick brushstrokes in night blues,
+		// Paints the backdrop: layers of long palette-knife swipes in night blues,
 		// laid in calm horizontal waves, with a few warm dabs of gold. The seed is
 		// fixed, so it is the same painting on every visit.
 		(function () {
@@ -396,72 +396,130 @@
 				};
 			}
 
+			// The painting is built twice over: once in colour, and once as a
+			// height map recording how thick the paint lies. The height map is
+			// then lit from the top left, so ridges catch the light and cast
+			// shadows the way knife-laid oil paint does.
+			var relief = document.createElement('canvas');
+			var rtx = relief.getContext('2d');
+
 			function paint() {
 				var w = window.innerWidth, h = window.innerHeight;
 				var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-				canvas.width = Math.round(w * dpr);
-				canvas.height = Math.round(h * dpr);
+				var W = canvas.width = relief.width = Math.round(w * dpr);
+				var H = canvas.height = relief.height = Math.round(h * dpr);
 				ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-				ctx.lineCap = 'round';
+				rtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+				ctx.lineCap = rtx.lineCap = 'round';
+				ctx.lineJoin = rtx.lineJoin = 'round';
 
 				var r = rng(1874), flow = noise(7), tone = noise(21), tint = noise(42);
 				var unit = Math.max(0.75, Math.min(1.35, Math.min(w, h) / 760));
 				var area = w * h;
 
-				// Underpainting
+				// Underpainting, lying thin and flat
 				var under = ctx.createLinearGradient(0, 0, 0, h);
 				under.addColorStop(0, '#070d26');
 				under.addColorStop(0.55, '#0f2658');
 				under.addColorStop(1, '#0a1a3c');
 				ctx.fillStyle = under;
 				ctx.fillRect(0, 0, w, h);
+				rtx.fillStyle = 'rgb(40,40,40)';
+				rtx.fillRect(0, 0, w, h);
 
-				// One loaded brushstroke. It follows the flow of the picture along
-				// its whole length, as parallel bristle lines with slightly ragged
-				// ends, a lit ridge along one edge and a shadow along the other.
 				function angleAt(x, y) {
 					return (flow(x * 0.0016, y * 0.0024) - 0.5) * 1.2;
 				}
 
-				function stroke(x, y, len, wid, hue, sat, light, alpha) {
-					var steps = Math.max(4, Math.round(len / 28));
-					var seg = len / steps, lean = (r() - 0.5) * 0.12;
-					// Walk back half the length, then forward, to centre the stroke
+				function hsl(hue, sat, light, alpha) {
+					return 'hsla(' + hue + ',' + sat + '%,' + Math.max(3, Math.min(92, light)) + '%,' + alpha + ')';
+				}
+
+				function grey(v) {
+					v = Math.max(0, Math.min(255, Math.round(v)));
+					return 'rgb(' + v + ',' + v + ',' + v + ')';
+				}
+
+				// A band of paint along the stroke at a sideways offset, between
+				// two fractions of its length. It wanders a little, as paint
+				// dragged by a blade does.
+				var jig = noise(99), bandId = 0;
+				function along(c, pts, o, from, to, wander) {
+					var i0 = Math.round(from * (pts.length - 1)), i1 = Math.round(to * (pts.length - 1));
+					if (i1 <= i0) return;
+					c.beginPath();
+					for (var i = i0; i <= i1; i++) {
+						var off = o * pts[i][4] + (jig(i * 0.3, bandId * 7.31) - 0.5) * wander;
+						var px = pts[i][0] + pts[i][2] * off, py = pts[i][1] + pts[i][3] * off;
+						if (i === i0) c.moveTo(px, py); else c.lineTo(px, py);
+					}
+					c.stroke();
+				}
+
+				// One swipe of the palette knife: a slab of paint that follows
+				// the flow of the picture. It is laid as overlapping dragged
+				// bands of uneven thickness, marbled with a second colour and
+				// broken where the blade skips, with paint piled along one edge
+				// and at the end where the knife lifts off.
+				function swipe(x, y, len, wid, hue, sat, light, body) {
+					var steps = Math.max(5, Math.round(len / 11));
+					var seg = len / steps, lean = (r() - 0.5) * 0.14;
 					var sx = x, sy = y, i, a;
 					for (i = 0; i < steps / 2; i++) {
 						a = angleAt(sx, sy) + lean;
 						sx -= Math.cos(a) * seg; sy -= Math.sin(a) * seg;
 					}
-					var pts = [];
+					var pts = [], press = 0.65 + r() * 0.3;
 					for (i = 0; i <= steps; i++) {
 						a = angleAt(sx, sy) + lean;
-						pts.push([sx, sy, -Math.sin(a), Math.cos(a)]);
+						// The slab is widest mid-swipe, where the knife is pressed flat
+						var t = i / steps, spread = press + (1 - press) * Math.sin(Math.PI * t);
+						pts.push([sx, sy, -Math.sin(a), Math.cos(a), spread]);
 						sx += Math.cos(a) * seg; sy += Math.sin(a) * seg;
 					}
-					var n = Math.max(3, Math.round(wid / 2.6));
-					ctx.lineWidth = (wid / n) * 1.7;
-					for (var k = 0; k < n; k++) {
-						var o = (k / (n - 1) - 0.5) * wid;
-						var from = r() < 0.5 ? 0 : 1, to = pts.length - (r() < 0.5 ? 1 : 2);
-						var l = light + (r() - 0.5) * 5 + (k === 0 ? 6 : k === n - 1 ? -6 : 0);
-						ctx.strokeStyle = 'hsla(' + hue + ',' + sat + '%,' + Math.max(3, l) + '%,' + alpha + ')';
-						ctx.beginPath();
-						ctx.moveTo(pts[from][0] + pts[from][2] * o, pts[from][1] + pts[from][3] * o);
-						for (var j = from + 1; j < to; j++) {
-							var cx = pts[j][0] + pts[j][2] * o, cy = pts[j][1] + pts[j][3] * o;
-							var nx = pts[j + 1][0] + pts[j + 1][2] * o, ny = pts[j + 1][1] + pts[j + 1][3] * o;
-							ctx.quadraticCurveTo(cx, cy, (cx + nx) / 2, (cy + ny) / 2);
-						}
-						ctx.lineTo(pts[to][0] + pts[to][2] * o, pts[to][1] + pts[to][3] * o);
-						ctx.stroke();
+					var half = wid / 2;
+					var level = body + r() * 45;
+					var hue2 = hue + (r() - 0.5) * 28, light2 = light + (r() < 0.5 ? 1 : -1) * (8 + r() * 13);
+					var bandW = Math.max(2.5, Math.min(7, wid / 5)) * unit;
+					var bands = Math.max(3, Math.round(wid / (bandW * 0.55)));
+					var wander = Math.min(6, wid * 0.22);
+
+					for (var k = 0; k < bands; k++) {
+						bandId++;
+						if (r() < 0.07) continue;                       // the blade skips
+						var o = (k / (bands - 1) - 0.5) * wid * 0.94;
+						var from = r() * 0.14, to = 1 - r() * 0.14;
+						if (r() < 0.18) { if (r() < 0.5) from += r() * 0.4; else to -= r() * 0.4; }
+						var thick = bandW * (0.7 + r() * 0.9);
+						ctx.lineWidth = rtx.lineWidth = thick;
+						ctx.strokeStyle = r() < 0.3
+							? hsl(hue2, sat, light2 + (r() - 0.5) * 6, 0.92)
+							: hsl(hue + (r() - 0.5) * 5, sat, light + (r() - 0.5) * 9, 0.95);
+						along(ctx, pts, o, from, to, wander);
+						rtx.strokeStyle = grey(level + (r() - 0.5) * 80);
+						along(rtx, pts, o, from, to, wander);
 					}
+
+					// Paint pushed up along one edge of the blade...
+					bandId++;
+					var side = r() < 0.5 ? 1 : -1;
+					rtx.lineWidth = (2 + r() * 2.2) * unit;
+					rtx.strokeStyle = grey(level + 80 + r() * 45);
+					along(rtx, pts, side * half * 0.96, 0.04, 0.96, wander);
+					// ...and a lip where the knife lifts off
+					var e = pts[pts.length - 1], reach = half * e[4] * 0.9;
+					rtx.lineWidth = (2.5 + r() * 3) * unit;
+					rtx.beginPath();
+					rtx.moveTo(e[0] + e[2] * reach, e[1] + e[3] * reach);
+					rtx.lineTo(e[0] - e[2] * reach, e[1] - e[3] * reach);
+					rtx.stroke();
 				}
 
-				// Blues, from broad dark strokes down to small bright touches
+				// Blues, from broad dark slabs down to smaller bright touches
 				var layers = [
-					{ per: 4200, len: [320, 620], wid: [26, 40], lift: 0 },
-					{ per: 2000, len: [180, 380], wid: [14, 22], lift: 4 },
-					{ per: 2600, len: [80, 190], wid: [6, 11], lift: 10 }
+					{ per: 9000, len: [240, 480], wid: [38, 64], lift: 0, body: 70 },
+					{ per: 4200, len: [150, 320], wid: [20, 34], lift: 4, body: 95 },
+					{ per: 4200, len: [60, 160], wid: [9, 16], lift: 10, body: 120 }
 				];
 				layers.forEach(function (layer) {
 					var count = Math.round(area / (layer.per * unit * unit));
@@ -476,14 +534,14 @@
 						else if (roll < 0.075 && layer.lift) { light = 70 + r() * 12; sat = 35; } // pale blue-white touch
 						var len = (layer.len[0] + r() * (layer.len[1] - layer.len[0])) * unit;
 						var wid = (layer.wid[0] + r() * (layer.wid[1] - layer.wid[0])) * unit;
-						stroke(x, y, len, wid, hue, sat, light, 0.9);
+						swipe(x, y, len, wid, hue, sat, light, layer.body);
 					}
 				});
 
-				// Warm dabs: a few loose columns of reflected light low in the
-				// picture, and scattered flecks above.
+				// Warm dabs, laid on last and thickest: a few loose columns of
+				// reflected light low in the picture, and scattered flecks above.
 				var columns = [0.09, 0.83, 0.93];
-				var dabs = Math.round(area / (22000 * unit * unit));
+				var dabs = Math.round(area / (20000 * unit * unit));
 				for (var d = 0; d < dabs; d++) {
 					var x, y;
 					if (r() < 0.72) {
@@ -494,9 +552,48 @@
 						x = r() * w;
 						y = r() * h * 0.5;
 					}
-					stroke(x, y, (40 + r() * 80) * unit, (4 + r() * 6) * unit,
-						34 + r() * 16, 70 + r() * 22, 44 + r() * 24, 0.9);
+					swipe(x, y, (36 + r() * 80) * unit, (7 + r() * 9) * unit,
+						34 + r() * 16, 70 + r() * 22, 44 + r() * 24, 150);
 				}
+
+				// Light the relief. A slope that faces the top-left light is
+				// brightened and takes a glossy highlight; one facing away falls
+				// into shadow. A little grain gives the tooth of the canvas.
+				var img, bump;
+				try {
+					img = ctx.getImageData(0, 0, W, H);
+					bump = rtx.getImageData(0, 0, W, H).data;
+				} catch (err) { return; }
+				var px = img.data, n = W * H, q, xx, yy;
+				var raw = new Float32Array(n), height = new Float32Array(n);
+				for (q = 0; q < n; q++) raw[q] = bump[q * 4];
+				// Soften the height map so paint has rounded shoulders, then add
+				// slow lumps and a fine grain.
+				var lump = noise(63);
+				for (yy = 1; yy < H - 1; yy++) {
+					for (xx = 1; xx < W - 1; xx++) {
+						q = yy * W + xx;
+						height[q] = (raw[q] * 2 + raw[q - 1] + raw[q + 1] + raw[q - W] + raw[q + W]) / 6
+							+ (lump(xx * 0.035, yy * 0.06) - 0.5) * 26
+							+ (r() - 0.5) * 6;
+					}
+				}
+				for (yy = 2; yy < H - 2; yy++) {
+					for (xx = 2; xx < W - 2; xx++) {
+						q = yy * W + xx;
+						var slope = (height[q + 1] - height[q - 1]) * 0.6 + (height[q + W] - height[q - W]) * 0.8
+							+ ((height[q + 2] - height[q - 2]) * 0.6 + (height[q + 2 * W] - height[q - 2 * W]) * 0.8) * 0.5;
+						var shade = slope / 105;
+						if (shade > 0.75) shade = 0.75; else if (shade < -0.62) shade = -0.62;
+						var gain = 1 + shade * 0.85;
+						var gloss = shade > 0.2 ? (shade - 0.2) * 115 : 0;
+						var o = q * 4;
+						px[o] = px[o] * gain + gloss;
+						px[o + 1] = px[o + 1] * gain + gloss;
+						px[o + 2] = px[o + 2] * gain + gloss * 0.92;
+					}
+				}
+				ctx.putImageData(img, 0, 0);
 			}
 
 			var paintedW = 0, paintedH = 0, timer;
