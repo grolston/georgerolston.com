@@ -1,80 +1,325 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>George Rolston</title>
-		<meta name="description" content="George Rolston — AWS Cloud Architect building AI-driven DevOps, automation, and platform engineering. Find me on GitHub, GitLab, Dev.to, and LinkedIn." />
-		<meta name="author" content="George Rolston" />
-		<link rel="canonical" href="https://www.georgerolston.com/" />
-		<link rel="icon" href="favicon.ico" sizes="any" />
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>George Rolston</title>
+	<meta name="description" content="George Rolston — AWS Cloud Architect building AI-driven DevOps, automation, and platform engineering. Find me on GitHub, GitLab, Dev.to, and LinkedIn." />
+	<meta name="author" content="George Rolston" />
+	<meta name="color-scheme" content="dark light" />
+	<meta name="theme-color" content="#0a0d14" media="(prefers-color-scheme: dark)" />
+	<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)" />
+	<link rel="canonical" href="https://www.georgerolston.com/" />
+	<link rel="icon" href="favicon.ico" sizes="any" />
 
-		<!-- Open Graph / social previews -->
-		<meta property="og:type" content="profile" />
-		<meta property="og:title" content="George Rolston" />
-		<meta property="og:description" content="AWS Cloud Architect focused on AI-driven DevOps and platform automation." />
-		<meta property="og:url" content="https://www.georgerolston.com/" />
-		<meta property="og:site_name" content="George Rolston" />
-		<meta property="profile:first_name" content="George" />
-		<meta property="profile:last_name" content="Rolston" />
-		<meta name="twitter:card" content="summary" />
-		<meta name="twitter:title" content="George Rolston" />
-		<meta name="twitter:description" content="AWS Cloud Architect focused on AI-driven DevOps and platform automation." />
+	<!-- Open Graph / social previews -->
+	<meta property="og:type" content="profile" />
+	<meta property="og:title" content="George Rolston" />
+	<meta property="og:description" content="AWS Cloud Architect focused on AI-driven DevOps and platform automation." />
+	<meta property="og:url" content="https://www.georgerolston.com/" />
+	<meta property="og:site_name" content="George Rolston" />
+	<meta property="profile:first_name" content="George" />
+	<meta property="profile:last_name" content="Rolston" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="George Rolston" />
+	<meta name="twitter:description" content="AWS Cloud Architect focused on AI-driven DevOps and platform automation." />
 
-		<script type="application/ld+json">
-		{
-			"@context": "https://schema.org",
-			"@type": "Person",
-			"name": "George Rolston",
-			"url": "https://www.georgerolston.com/",
-			"jobTitle": "AWS Cloud Architect",
-			"knowsAbout": ["Amazon Web Services", "Cloud Architecture", "DevOps", "Generative AI", "Infrastructure as Code", "Platform Engineering"],
-			"sameAs": [
-				"https://github.com/grolston",
-				"https://gitlab.com/rolston",
-				"https://dev.to/grolston",
-				"https://www.linkedin.com/in/george-rolston/"
-			]
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "Person",
+		"name": "George Rolston",
+		"url": "https://www.georgerolston.com/",
+		"jobTitle": "AWS Cloud Architect",
+		"knowsAbout": ["Amazon Web Services", "Cloud Architecture", "DevOps", "Generative AI", "Infrastructure as Code", "Platform Engineering"],
+		"sameAs": [
+			"https://github.com/grolston",
+			"https://gitlab.com/rolston",
+			"https://dev.to/grolston",
+			"https://www.linkedin.com/in/george-rolston/"
+		]
+	}
+	</script>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" />
+
+	<style>
+		:root {
+			--bg: #0a0d14;
+			--text: #eef1f6;
+			--muted: #8d97a8;
+			--line: rgba(255, 255, 255, 0.09);
+			--card: rgba(255, 255, 255, 0.035);
+			--card-hover: rgba(255, 255, 255, 0.07);
+			--accent: #ff9d2e;
+			--glow-a: rgba(255, 153, 0, 0.20);
+			--glow-b: rgba(72, 118, 255, 0.22);
+			--grid: rgba(255, 255, 255, 0.045);
+			--sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+			--mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 		}
-		</script>
 
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
-		<div id="wrapper">
-			<div id="bg"></div>
-			<div id="overlay"></div>
-			<div id="main">
+		@media (prefers-color-scheme: light) {
+			:root {
+				--bg: #f5f6f8;
+				--text: #0d1220;
+				--muted: #5b6474;
+				--line: rgba(13, 18, 32, 0.12);
+				--card: rgba(255, 255, 255, 0.7);
+				--card-hover: #ffffff;
+				--accent: #c96a00;
+				--glow-a: rgba(255, 153, 0, 0.22);
+				--glow-b: rgba(72, 118, 255, 0.18);
+				--grid: rgba(13, 18, 32, 0.05);
+			}
+		}
 
-				<!-- Header -->
-					<header id="header">
-						<h1>George Rolston</h1>
-						<p>AWS Cloud Architect &nbsp;&bull;&nbsp; AI &amp; DevOps &nbsp;&bull;&nbsp; Platform Automation</p>
-						<nav aria-label="Profiles">
-							<ul>
-								<li><a href="https://github.com/grolston" class="icon brands fa-github" rel="me noopener" aria-label="GitHub"><span class="label">GitHub</span></a></li>
-								<li><a href="https://gitlab.com/rolston" class="icon brands fa-gitlab" rel="me noopener" aria-label="GitLab"><span class="label">GitLab</span></a></li>
-								<li><a href="https://dev.to/grolston" class="icon brands fa-dev" rel="me noopener" aria-label="Dev.to"><span class="label">Dev.to</span></a></li>
-								<li><a href="https://www.linkedin.com/in/george-rolston/" class="icon brands fa-linkedin" rel="me noopener" aria-label="LinkedIn"><span class="label">LinkedIn</span></a></li>
-							</ul>
-						</nav>
-					</header>
+		*, *::before, *::after { box-sizing: border-box; }
 
-				<!-- Footer -->
-					<footer id="footer">
-						<span class="copyright">&copy; <span id="year">2026</span> George Rolston &nbsp;|&nbsp; Design: <a href="https://html5up.net" rel="noopener">HTML5 UP</a></span>
-					</footer>
+		html { -webkit-text-size-adjust: 100%; }
 
-			</div>
-		</div>
-		<script>
-			document.getElementById('year').textContent = new Date().getFullYear();
-			window.onload = function() { document.body.classList.remove('is-preload'); }
-			window.ontouchmove = function() { return false; }
-			window.onorientationchange = function() { document.body.scrollTop = 0; }
-		</script>
-	</body>
+		body {
+			margin: 0;
+			min-height: 100vh;
+			min-height: 100dvh;
+			display: flex;
+			flex-direction: column;
+			background: var(--bg);
+			color: var(--text);
+			font-family: var(--sans);
+			line-height: 1.5;
+			-webkit-font-smoothing: antialiased;
+			overflow-x: hidden;
+		}
+
+		/* Background: faint grid plus two slow-drifting glows */
+		.backdrop {
+			position: fixed;
+			inset: 0;
+			z-index: -1;
+			overflow: hidden;
+			pointer-events: none;
+		}
+
+		.backdrop::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background-image:
+				linear-gradient(var(--grid) 1px, transparent 1px),
+				linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+			background-size: 56px 56px;
+			-webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 20%, transparent 75%);
+			mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 20%, transparent 75%);
+		}
+
+		.glow {
+			position: absolute;
+			width: 60vmax;
+			height: 60vmax;
+			border-radius: 50%;
+			filter: blur(90px);
+			animation: drift 26s ease-in-out infinite alternate;
+		}
+
+		.glow.a { top: -30vmax; right: -18vmax; background: radial-gradient(circle, var(--glow-a), transparent 65%); }
+		.glow.b { bottom: -34vmax; left: -20vmax; background: radial-gradient(circle, var(--glow-b), transparent 65%); animation-delay: -13s; }
+
+		@keyframes drift {
+			from { transform: translate3d(0, 0, 0) scale(1); }
+			to { transform: translate3d(-6vmax, 5vmax, 0) scale(1.12); }
+		}
+
+		main {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			width: 100%;
+			max-width: 46rem;
+			margin: 0 auto;
+			padding: 4rem 1.5rem 2rem;
+		}
+
+		h1 {
+			margin: 0;
+			font-size: clamp(2.9rem, 11vw, 5.75rem);
+			font-weight: 700;
+			line-height: 0.98;
+			letter-spacing: -0.04em;
+			text-wrap: balance;
+		}
+
+		.tagline {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.35rem 0.9rem;
+			margin: 1.6rem 0 0;
+			font-family: var(--mono);
+			font-size: clamp(0.8rem, 2.4vw, 0.95rem);
+			color: var(--muted);
+		}
+
+		.tagline span:not(:last-child)::after {
+			content: "/";
+			margin-left: 0.9rem;
+			color: var(--accent);
+		}
+
+		.links {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 0.75rem;
+			margin: 3rem 0 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.links a {
+			display: flex;
+			align-items: center;
+			gap: 0.9rem;
+			padding: 1rem 1.1rem;
+			border: 1px solid var(--line);
+			border-radius: 14px;
+			background: var(--card);
+			color: inherit;
+			text-decoration: none;
+			-webkit-backdrop-filter: blur(8px);
+			backdrop-filter: blur(8px);
+			transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+		}
+
+		.links a:hover {
+			transform: translateY(-2px);
+			background: var(--card-hover);
+			border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+		}
+
+		.links a:focus-visible,
+		footer a:focus-visible {
+			outline: 2px solid var(--accent);
+			outline-offset: 3px;
+		}
+
+		.links svg { flex: none; fill: currentColor; }
+		.links .brand { width: 1.5rem; height: 1.5rem; }
+
+		.links .text { display: flex; flex-direction: column; min-width: 0; }
+		.links .name { font-weight: 500; line-height: 1.25; }
+
+		.links .handle {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			font-family: var(--mono);
+			font-size: 0.78rem;
+			color: var(--muted);
+		}
+
+		.links .arrow {
+			width: 1rem;
+			height: 1rem;
+			margin-left: auto;
+			fill: none;
+			stroke: var(--muted);
+			stroke-width: 1.75;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			transition: transform 0.2s ease, stroke 0.2s ease;
+		}
+
+		.links a:hover .arrow { transform: translate(2px, -2px); stroke: var(--accent); }
+
+		footer {
+			width: 100%;
+			max-width: 46rem;
+			margin: 0 auto;
+			padding: 1.5rem;
+			font-family: var(--mono);
+			font-size: 0.75rem;
+			color: var(--muted);
+		}
+
+		/* Entrance */
+		h1, .tagline, .links li, footer { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+		.tagline { animation-delay: 0.08s; }
+		.links li:nth-child(1) { animation-delay: 0.16s; }
+		.links li:nth-child(2) { animation-delay: 0.22s; }
+		.links li:nth-child(3) { animation-delay: 0.28s; }
+		.links li:nth-child(4) { animation-delay: 0.34s; }
+		footer { animation-delay: 0.45s; }
+
+		@keyframes rise {
+			from { opacity: 0; transform: translateY(14px); }
+			to { opacity: 1; transform: none; }
+		}
+
+		@media (max-width: 34rem) {
+			main { padding-top: 3rem; }
+			.links { grid-template-columns: 1fr; margin-top: 2.25rem; }
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after { animation: none !important; transition: none !important; }
+		}
+	</style>
+</head>
+<body>
+	<div class="backdrop" aria-hidden="true">
+		<div class="glow a"></div>
+		<div class="glow b"></div>
+	</div>
+
+	<main>
+		<h1>George Rolston</h1>
+		<p class="tagline">
+			<span>AWS Cloud Architect</span>
+			<span>AI &amp; DevOps</span>
+			<span>Platform Automation</span>
+		</p>
+
+		<!-- Brand icons: Font Awesome Free (CC BY 4.0), fontawesome.com -->
+		<nav aria-label="Profiles">
+			<ul class="links">
+				<li>
+					<a href="https://github.com/grolston" rel="me noopener">
+						<svg class="brand" viewBox="0 0 496 512" aria-hidden="true"><path transform="matrix(1 0 0 -1 0 448)" d="M165.9 50.5996c0 -2 -2.30078 -3.59961 -5.2002 -3.59961c-3.2998 -0.299805 -5.60059 1.2998 -5.60059 3.59961c0 2 2.30078 3.60059 5.2002 3.60059c3 0.299805 5.60059 -1.2998 5.60059 -3.60059zM134.8 55.0996c0.700195 2 3.60059 3 6.2002 2.30078 c3 -0.900391 4.90039 -3.2002 4.2998 -5.2002c-0.599609 -2 -3.59961 -3 -6.2002 -2c-3 0.599609 -5 2.89941 -4.2998 4.89941zM179 56.7998c2.90039 0.299805 5.59961 -1 5.90039 -2.89941c0.299805 -2 -1.7002 -3.90039 -4.60059 -4.60059 c-3 -0.700195 -5.59961 0.600586 -5.89941 2.60059c-0.300781 2.2998 1.69922 4.19922 4.59961 4.89941zM244.8 440c138.7 0 251.2 -105.3 251.2 -244c0 -110.9 -67.7998 -205.8 -167.8 -239c-12.7002 -2.2998 -17.2998 5.59961 -17.2998 12.0996 c0 8.2002 0.299805 49.9004 0.299805 83.6006c0 23.5 -7.7998 38.5 -17 46.3994c55.8994 6.30078 114.8 14 114.8 110.5c0 27.4004 -9.7998 41.2002 -25.7998 58.9004c2.59961 6.5 11.0996 33.2002 -2.60059 67.9004c-20.8994 6.59961 -69 -27 -69 -27 c-20 5.59961 -41.5 8.5 -62.7998 8.5s-42.7998 -2.90039 -62.7998 -8.5c0 0 -48.0996 33.5 -69 27c-13.7002 -34.6006 -5.2002 -61.4004 -2.59961 -67.9004c-16 -17.5996 -23.6006 -31.4004 -23.6006 -58.9004c0 -96.1992 56.4004 -104.3 112.3 -110.5 c-7.19922 -6.59961 -13.6992 -17.6992 -16 -33.6992c-14.2998 -6.60059 -51 -17.7002 -72.8994 20.8994c-13.7002 23.7998 -38.6006 25.7998 -38.6006 25.7998c-24.5 0.300781 -1.59961 -15.3994 -1.59961 -15.3994c16.4004 -7.5 27.7998 -36.6006 27.7998 -36.6006 c14.7002 -44.7998 84.7002 -29.7998 84.7002 -29.7998c0 -21 0.299805 -55.2002 0.299805 -61.3994c0 -6.5 -4.5 -14.4004 -17.2998 -12.1006c-99.7002 33.4004 -169.5 128.3 -169.5 239.2c0 138.7 106.1 244 244.8 244zM97.2002 95.0996 c1.2998 1.30078 3.59961 0.600586 5.2002 -1c1.69922 -1.89941 2 -4.19922 0.699219 -5.19922c-1.2998 -1.30078 -3.59961 -0.600586 -5.19922 1c-1.7002 1.89941 -2 4.19922 -0.700195 5.19922zM86.4004 103.2c0.699219 1 2.2998 1.2998 4.2998 0.700195 c2 -1 3 -2.60059 2.2998 -3.90039c-0.700195 -1.40039 -2.7002 -1.7002 -4.2998 -0.700195c-2 1 -3 2.60059 -2.2998 3.90039zM118.8 67.5996c1.2998 1.60059 4.2998 1.30078 6.5 -1c2 -1.89941 2.60059 -4.89941 1.2998 -6.19922 c-1.2998 -1.60059 -4.19922 -1.30078 -6.5 1c-2.2998 1.89941 -2.89941 4.89941 -1.2998 6.19922zM107.4 82.2998c1.59961 1.2998 4.19922 0.299805 5.59961 -2c1.59961 -2.2998 1.59961 -4.89941 0 -6.2002c-1.2998 -1 -4 0 -5.59961 2.30078 c-1.60059 2.2998 -1.60059 4.89941 0 5.89941z"/></svg>
+						<span class="text"><span class="name">GitHub</span><span class="handle">github.com/grolston</span></span>
+						<svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg>
+					</a>
+				</li>
+				<li>
+					<a href="https://gitlab.com/rolston" rel="me noopener">
+						<svg class="brand" viewBox="0 0 512 512" aria-hidden="true"><path transform="matrix(1 0 0 -1 0 448)" d="M105.2 423.1c0 0 56.5 -174.8 56.5996 -174.8h-132l56.5 174.8c3.2002 8.90039 15.7998 8.90039 18.9004 0zM0.900391 160.3l28.7998 88l226.2 -294l-247.9 184c-6.7998 5.10059 -9.7002 14 -7.09961 22zM161.7 248.3h188.6l-94.2998 -294zM511.1 160.3 c2.5 -8 -0.299805 -16.8994 -7.19922 -22l-247.9 -184l226.3 294zM425.7 423.1l56.5 -174.8h-132l56.5996 174.8c3.2002 8.90039 15.7998 8.90039 18.9004 0z"/></svg>
+						<span class="text"><span class="name">GitLab</span><span class="handle">gitlab.com/rolston</span></span>
+						<svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg>
+					</a>
+				</li>
+				<li>
+					<a href="https://dev.to/grolston" rel="me noopener">
+						<svg class="brand" viewBox="0 0 448 512" aria-hidden="true"><path transform="matrix(1 0 0 -1 0 448)" d="M120.12 239.71c3.87012 -2.90039 5.82031 -7.25977 5.83008 -13.0596v-69.6504c0 -5.80957 -1.94043 -10.1602 -5.82031 -13.0596c-3.87988 -2.90039 -7.76953 -4.35059 -11.6494 -4.35059h-17.4502v104.47h17.4395c3.87988 0 7.77051 -1.44922 11.6504 -4.34961z M404.1 416c24.2002 0 43.8408 -19.5898 43.9004 -43.7998v-360.4c-0.0595703 -24.21 -19.6904 -43.7998 -43.9004 -43.7998h-360.199c-24.2002 0 -43.8408 19.5898 -43.9004 43.7998v360.4c0.0595703 24.21 19.7002 43.7998 43.9004 43.7998h360.199zM154.2 156.81 l-0.00976562 70.9307c-0.0107422 18.8193 -11.9307 47.2793 -47.3701 47.2793h-47.3799v-165.46h46.3994c36.75 -0.0595703 48.3604 28.4404 48.3604 47.25zM254.88 245.47l0.00976562 29.5205h-63.1895c-11.1504 -0.280273 -19.9805 -9.54004 -19.71 -20.6904v-125.109 c0.279297 -11.1602 9.55957 -19.9805 20.7197 -19.6904h62.1797v29.5703h-53.29v38.4102h32.5703v29.5693h-32.5703v38.4199h53.2803zM358.52 130.18l38.4609 144.801h-32.5801l-29.5703 -113.721l-29.71 113.721h-32.5703l38.5303 -144.801 c10.5898 -24.6299 34.2402 -30.75 47.4395 0z"/></svg>
+						<span class="text"><span class="name">Dev.to</span><span class="handle">dev.to/grolston</span></span>
+						<svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg>
+					</a>
+				</li>
+				<li>
+					<a href="https://www.linkedin.com/in/george-rolston/" rel="me noopener">
+						<svg class="brand" viewBox="0 0 448 512" aria-hidden="true"><path transform="matrix(1 0 0 -1 0 448)" d="M100.28 0h-92.8799v299.1h92.8799v-299.1zM53.79 339.9c-29.7002 0 -53.79 24.5996 -53.79 54.2998c0 29.6914 24.0977 53.79 53.79 53.79s53.79 -24.0986 53.79 -53.79c0 -29.7002 -24.0996 -54.2998 -53.79 -54.2998zM447.9 0h-92.6807v145.6 c0 34.7002 -0.700195 79.2002 -48.29 79.2002c-48.29 0 -55.6895 -37.7002 -55.6895 -76.7002v-148.1h-92.7803v299.1h89.0801v-40.7998h1.2998c12.4004 23.5 42.6904 48.2998 87.8799 48.2998c94 0 111.28 -61.8994 111.28 -142.3v-164.3h-0.0996094z"/></svg>
+						<span class="text"><span class="name">LinkedIn</span><span class="handle">linkedin.com/in/george-rolston</span></span>
+						<svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg>
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</main>
+
+	<footer>&copy; <span id="year">2026</span> George Rolston</footer>
+
+	<script>
+		document.getElementById('year').textContent = new Date().getFullYear();
+	</script>
+</body>
 </html>
