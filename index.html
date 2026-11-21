@@ -368,8 +368,8 @@
 	<script>
 		document.getElementById('year').textContent = new Date().getFullYear();
 
-		// Paints the backdrop: overlapping palette-knife dabs in night blues,
-		// laid in calm waves, with a few warm dabs of gold. The seed is
+		// Paints the backdrop: a swirling night sky after Van Gogh, in overlapping
+		// palette-knife dabs, with stars, a moon and dark hills. The seed is
 		// fixed, so it is the same painting on every visit.
 		(function () {
 			var canvas = document.getElementById('painting');
@@ -524,37 +524,137 @@
 				}
 				spots.sort(function (a, b) { return a[2] - b[2]; });
 
-				var columns = [0.09, 0.83, 0.93];
+				// The sky: stars and a moon, each a whorl of light the dabs circle
+				// round, and two great swirls rolling through the middle.
+				// Positions are fractions of the window; sizes, of its short side.
+				var m = Math.min(w, h);
+				var lights = [
+					{ x: 0.90, y: 0.13, r: 0.115, moon: true },
+					{ x: 0.07, y: 0.15, r: 0.070 },
+					{ x: 0.25, y: 0.07, r: 0.048 },
+					{ x: 0.41, y: 0.21, r: 0.055 },
+					{ x: 0.61, y: 0.07, r: 0.050 },
+					{ x: 0.75, y: 0.29, r: 0.058 },
+					{ x: 0.13, y: 0.46, r: 0.050 },
+					{ x: 0.93, y: 0.55, r: 0.042 },
+					{ x: 0.30, y: 0.63, r: 0.040 }
+				];
+				var swirls = [
+					{ x: 0.47, y: 0.40, r: 0.25, turn: 1 },
+					{ x: 0.69, y: 0.52, r: 0.15, turn: -1 }
+				];
+				// On a narrow screen the text fills the middle, so keep stars out of it
+				if (w < 560) lights = lights.filter(function (o) { return o.x < 0.2 || o.x > 0.85 || o.y < 0.18 || o.y > 0.6; });
+				lights.concat(swirls).forEach(function (o) { o.px = o.x * w; o.py = o.y * h; o.pr = o.r * m; });
+
+				function hillTop(cx) {
+					var t = cx / w;
+					return h * (0.875 + 0.035 * Math.sin(t * 5.2 + 1) + 0.018 * Math.sin(t * 13 + 2));
+				}
+
 				for (i = 0; i < spots.length; i++) {
 					var x = spots[i][0], y = spots[i][1], cx = x / S, cy = y / S;
-					var angle = (flow(cx * 0.0016, cy * 0.0024) - 0.5) * 1.3 + (r() - 0.5) * 0.5;
-					var len = (50 + r() * 52) * U, wid = (30 + r() * 24) * U;
+					var k, o, dx, dy, d, pull;
 
-					// Warm dabs: loose columns of reflected light low in the
-					// picture, and scattered flecks above
-					var warm = cy < h * 0.5 ? 0.02 : 0.008;
-					for (var c = 0; c < columns.length; c++) {
-						var off = Math.abs(cx - columns[c] * w) / (52 * U / S);
-						if (off < 1 && cy > h * 0.42) warm = Math.max(warm, 0.5 * (1 - off * off));
+					// Direction: a gentle drift, bent into circles round each
+					// light and swept along by the swirls
+					var base = (flow(cx * 0.0016, cy * 0.0024) - 0.5) * 0.9;
+					var fx = Math.cos(base), fy = Math.sin(base);
+					var near = null, nearRatio = 9, swirl = null, swirlRatio = 9, swirlTheta = 0;
+					for (k = 0; k < lights.length; k++) {
+						o = lights[k]; dx = cx - o.px; dy = cy - o.py; d = Math.sqrt(dx * dx + dy * dy) + 0.01;
+						pull = Math.exp(-Math.pow(d / (o.pr * 1.5), 2)) * 4;
+						fx += -dy / d * pull; fy += dx / d * pull;
+						if (d / o.pr < nearRatio) { nearRatio = d / o.pr; near = o; }
 					}
-
+					for (k = 0; k < swirls.length; k++) {
+						o = swirls[k]; dx = cx - o.px; dy = cy - o.py; d = Math.sqrt(dx * dx + dy * dy) + 0.01;
+						pull = Math.exp(-Math.pow(d / (o.pr * 1.25), 2)) * 3.2;
+						// Mostly round the centre, a little inward: a spiral
+						fx += (-dy / d * o.turn - dx / d * 0.25) * pull; fy += (dx / d * o.turn - dy / d * 0.25) * pull;
+						if (d / o.pr < swirlRatio) { swirlRatio = d / o.pr; swirl = o; swirlTheta = Math.atan2(dy, dx); }
+					}
+					var angle = Math.atan2(fy, fx) + (r() - 0.5) * 0.35;
+					var len = (50 + r() * 52) * U, wid = (30 + r() * 24) * U;
 					var hue, sat, light, hue2, light2;
-					if (r() < warm) {
-						hue = 34 + r() * 16; sat = 72 + r() * 22; light = 46 + r() * 22;
-						hue2 = hue + (r() - 0.5) * 22; light2 = light + (r() < 0.5 ? 12 : -14);
-						len *= 0.8; wid *= 0.75;
+					var hill = cy > hillTop(cx);
+
+					if (hill) {
+						// Dark hills along the bottom, with the odd lit window
+						angle = (flow(cx * 0.004, 3) - 0.5) * 0.5 + (r() - 0.5) * 0.3;
+						if (r() < 0.018 && cy > hillTop(cx) + 14) {
+							hue = 40 + r() * 10; sat = 85; light = 55 + r() * 12; len *= 0.35; wid *= 0.35;
+						} else {
+							hue = 222 + r() * 16; sat = 40 + r() * 20; light = 4 + r() * 7;
+						}
+						hue2 = hue + (r() - 0.5) * 20; light2 = light + 4;
+					} else if (near && nearRatio < 0.32) {
+						// Heart of a star: thick cream; of the moon: orange-gold
+						hue = near.moon ? 34 + r() * 10 : 50 + r() * 8; sat = near.moon ? 90 : 75;
+						light = near.moon ? 58 + r() * 10 : 80 + r() * 9;
+						hue2 = hue - 6; light2 = light - 10; len *= 0.6; wid *= 0.7;
+					} else if (near && nearRatio < 0.7) {
+						// Its ring of yellow
+						hue = (near.moon ? 44 : 46) + r() * 10; sat = 80 + r() * 14; light = 56 + r() * 14;
+						hue2 = hue - 10; light2 = light - 12; len *= 0.7; wid *= 0.75;
+					} else if (near && nearRatio < 1.2 && r() < 0.6) {
+						// Its halo: pale green-gold and light blue, half and half
+						if (r() < 0.5) { hue = 58 + r() * 22; sat = 45 + r() * 20; light = 52 + r() * 14; }
+						else { hue = 198 + r() * 14; sat = 50 + r() * 20; light = 48 + r() * 16; }
+						hue2 = hue + (r() - 0.5) * 30; light2 = light + (r() - 0.5) * 20; len *= 0.8; wid *= 0.8;
 					} else {
 						var t = tone(cx * 0.003, cy * 0.004);
 						hue = 232 - 40 * tint(cx * 0.002, cy * 0.003) + (r() - 0.5) * 14;
 						sat = 52 + r() * 28;
-						light = 7 + 24 * t + 6 * Math.sin(Math.PI * cy / h) + (r() - 0.5) * 9;
+						light = 8 + 22 * t + (r() - 0.5) * 9;
+						// Bands of pale blue winding through the swirls
+						if (swirl && swirlRatio < 1.5) {
+							var band = Math.sin(swirlRatio * 8.5 - swirlTheta * swirl.turn * 2);
+							if (band > 0.15 && r() < 0.8) {
+								light += 16 + band * 22 + r() * 8; hue = 200 + r() * 18; sat = 45 + r() * 25;
+								if (r() < 0.15) { light = 74 + r() * 10; sat = 30; }
+							}
+						}
+						// A pale glow low in the sky, above the hills
+						var glow = Math.exp(-Math.pow((cy - h * 0.8) / (h * 0.07), 2));
+						if (r() < glow * 0.75) { light += 18 + r() * 16; hue = 192 + r() * 16; sat = 40 + r() * 20; }
 						var roll = r();
-						if (roll < 0.06) light += 14 + r() * 12;               // cerulean highlight
-						else if (roll < 0.075) { light = 68 + r() * 12; sat = 35; } // pale blue-white touch
+						if (roll < 0.05) light += 12 + r() * 10;
 						hue2 = hue + (r() - 0.5) * 30; light2 = light + (r() < 0.5 ? 1 : -1) * (8 + r() * 12);
 					}
 					dab(x, y, angle, len, wid, hslToRgb(hue, sat, light), hslToRgb(hue2, sat, light2), 85 + r() * 75);
 				}
+
+				// Then each light is worked up with smaller dabs laid in rings:
+				// a cream or orange heart, yellow round it, and a broken halo.
+				lights.forEach(function (o) {
+					var rings = [0.1, 0.27, 0.44, 0.62, 0.8, 1.0, 1.2];
+					for (var ri = rings.length - 1; ri >= 0; ri--) {
+						var ratio = rings[ri], rad = ratio * o.pr * S;
+						var dl = Math.max(14 * U, Math.min(46 * U, o.pr * S * 0.42)), dw = dl * 0.5;
+						var count = Math.max(3, Math.round(2 * Math.PI * rad / (dl * 0.55)));
+						var start = r() * 6.28;
+						for (var j = 0; j < count; j++) {
+							if (ratio > 0.9 && r() < 0.4) continue;      // the halo is broken
+							var th = start + j / count * 6.283 + (r() - 0.5) * 0.25;
+							var rr = rad * (1 + (r() - 0.5) * 0.16);
+							var hue, sat, light;
+							if (ratio < 0.3) {
+								hue = o.moon ? 34 + r() * 10 : 50 + r() * 8; sat = o.moon ? 90 : 72;
+								light = o.moon ? 60 + r() * 10 : 82 + r() * 8;
+							} else if (ratio < 0.7) {
+								hue = 44 + r() * 12; sat = 82 + r() * 12; light = 56 + r() * 14;
+							} else if (r() < 0.5) {
+								hue = 58 + r() * 22; sat = 45 + r() * 20; light = 54 + r() * 14;
+							} else {
+								hue = 198 + r() * 14; sat = 50 + r() * 20; light = 48 + r() * 16;
+							}
+							dab(o.px * S + Math.cos(th) * rr, o.py * S + Math.sin(th) * rr, th + Math.PI / 2 + (r() - 0.5) * 0.3,
+								dl * (0.8 + r() * 0.5), dw * (0.8 + r() * 0.5),
+								hslToRgb(hue, sat, light), hslToRgb(hue - 8, sat, light - 12), 110 + r() * 70);
+						}
+					}
+				});
 
 				// Soften the height map a touch and add the fine grain of canvas
 				var soft = new Float32Array(n);
